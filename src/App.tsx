@@ -1,16 +1,18 @@
 import  {useState}  from 'react';
 import styles from './App.module.css';
 import PoweredImgage from './assets/powered.png';
+import { GridItem } from './components/gridItem'
 
-import {levels, calculateImc} from './helpers/imc'
+import {Level, calculateImc, levels} from './helpers/imc'
 
 const App = () => {
   const [heightField, setHeightField] = useState<number>(0);
   const [weightField, setWeightField] = useState<number>(0);
+  const [toShow, setToshow] = useState<Level | null>(null)
 
   const handleCalcular = () => {
     if(heightField && weightField) {
-
+      setToshow(calculateImc(heightField, weightField));
     } else {
       alert("Preencha os campos!!!")
     }
@@ -44,11 +46,19 @@ const App = () => {
           <button onClick={handleCalcular}>Calcular</button>
         </div>
         <div className={styles.rightSide}>
-          <div className={styles.grid}>
-            {levels.map((item, key)=>(
-              <div>{item.title}</div>
-            ))}
-          </div>
+          {!toShow &&
+            <div className={styles.grid}>
+              {levels.map((item, key)=>(
+                <GridItem key={key} item={item}/>
+              ))}
+            </div>
+          }
+          {toShow &&
+            <div className={styles.rightBig}>
+              <div className={styles.rightArrow}></div>
+              <GridItem item={toShow}/>
+            </div>
+          }
         </div>
       </div>
     </div>
